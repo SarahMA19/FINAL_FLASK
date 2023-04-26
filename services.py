@@ -31,10 +31,7 @@ def requestTranscription(file):
         data = res.json()
         # print(data)
        
-account_name = "audiofilesproject" 
-account_key = "22pd8D9ByK9cQCb2Na+4e35K2WemzEoLPu917yKgCUnpEhllm8cdvx6TMvbkYQNQUYErJROUPGzL+AStZyMRZA=="
-container_name = "test2"
-blob_name = "ENG_M.wav" 
+
 
 
 def get_blob_sas(account_name,account_key, container_name, blob_name):
