@@ -1,0 +1,18 @@
+{
+    "contentUrls": [
+        "https://audiofilesproject.blob.core.windows.net/test2/ENG_M.wav?sp=r&st=2023-04-26T03:39:04Z&se=2023-04-26T11:39:04Z&spr=https&sv=2021-12-02&sr=b&sig=J%2FZ56F3UV7OXvJACTdPN1NnMHg1KjYsYlAIOHDJYwJE%3D"
+    ],
+    "locale": "en-US",
+    "displayName": "My Translation",
+    "model": "null",
+    "properties": {
+        "wordLevelTimestampsEnabled": "true",
+        "languageIdentification": {
+            "candidateLocales": [
+                "en-US",
+                "de-DE",
+                "es-ES"
+            ]
+        }
+    }
+}

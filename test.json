@@ -1,0 +1,26 @@
+curl -v -X POST -H "Ocp-Apim-Subscription-Key: 5cb74fcedeb14edd8eee96bc0634288b" -H "Content-Type: application/json" -d '
+{
+    "contentUrls":["https://audiofilesproject.blob.core.windows.net/test2/ENG_M.wav?sp=r&st=2023-04-26T03:39:04Z&se=2023-04-26T11:39:04Z&spr=https&sv=2021-12-02&sr=b&sig=J%2FZ56F3UV7OXvJACTdPN1NnMHg1KjYsYlAIOHDJYwJE%3D"],
+    "locale": "en-US",
+    "displayName": "My Translation",
+    "model": null,
+    "properties": {
+        "wordLevelTimestampsEnabled": true,
+        "languageIdentification": {
+            "candidateLocales": [
+                "en-US",
+                "de-DE",
+                "es-ES"
+            ]
+        }
+    }
+}' "https://cognativeaudio.cognitiveservices.azure.com/speechtotext/v3.1/transcriptions"
+
+                                                                                            // Transcription ID is it done?
+curl -v -X GET  "https://cognativeaudio.cognitiveservices.azure.com/speechtotext/v3.1/transcriptions/bcffbf5a-7fd5-4a9b-b341-863c81c9ba6c" -H "Ocp-Apim-Subscription-Key: 5cb74fcedeb14edd8eee96bc0634288b"
+
+                                                                                            // printed each word
+curl -v -X GET "https://cognativeaudio.cognitiveservices.azure.com/speechtotext/v3.1/transcriptions/bcffbf5a-7fd5-4a9b-b341-863c81c9ba6c/files" -H "Ocp-Apim-Subscription-Key: 5cb74fcedeb14edd8eee96bc0634288b"
+
+
+ -v -X GET "https://spsvcprodusw3.blob.core.windows.net/customspeech-artifacts/TranscriptionData/bcffbf5a-7fd5-4a9b-b341-863c81c9ba6c_0_0.json?sv=2021-12-02&st=2023-04-26T03%3A38%3A04Z&se=2023-04-26T15%3A43%3A04Z&sr=b&sp=rl&sig=SAmWiv4pQ%2FJON%2Bsy0meOks4Uap71R86NT9VjfCAtBag%3D" -H "Ocp-Apim-Subscription-Key: 5cb74fcedeb14edd8eee96bc0634288b"curl

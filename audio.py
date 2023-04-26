@@ -53,7 +53,7 @@ def view_photos():
                     <form method="post" action="/upload-photos" 
                         enctype="multipart/form-data">
                         <div style="display: flex;">
-                            <input type="file" accept=".png, .jpeg, .jpg, .gif" name="photos" multiple class="form-control" style="margin-right: 1em;">
+                            <input type="file" accept=".mp3, .wav" name="photos" multiple class="form-control" style="margin-right: 1em;">
                             <input type="text" name="containername">
                             <input type="submit" class="btn btn-primary">
                         </div>
