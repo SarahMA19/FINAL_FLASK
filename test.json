@@ -23,4 +23,7 @@ curl -v -X GET  "https://cognativeaudio.cognitiveservices.azure.com/speechtotext
 curl -v -X GET "https://cognativeaudio.cognitiveservices.azure.com/speechtotext/v3.1/transcriptions/bcffbf5a-7fd5-4a9b-b341-863c81c9ba6c/files" -H "Ocp-Apim-Subscription-Key: 5cb74fcedeb14edd8eee96bc0634288b"
 
 
- -v -X GET "https://spsvcprodusw3.blob.core.windows.net/customspeech-artifacts/TranscriptionData/bcffbf5a-7fd5-4a9b-b341-863c81c9ba6c_0_0.json?sv=2021-12-02&st=2023-04-26T03%3A38%3A04Z&se=2023-04-26T15%3A43%3A04Z&sr=b&sp=rl&sig=SAmWiv4pQ%2FJON%2Bsy0meOks4Uap71R86NT9VjfCAtBag%3D" -H "Ocp-Apim-Subscription-Key: 5cb74fcedeb14edd8eee96bc0634288b"curl
+curl -v -X GET "https://spsvcprodusw3.blob.core.windows.net/customspeech-artifacts/TranscriptionData/bcffbf5a-7fd5-4a9b-b341-863c81c9ba6c_0_0.json?sv=2021-12-02&st=2023-04-26T03%3A38%3A04Z&se=2023-04-26T15%3A43%3A04Z&sr=b&sp=rl&sig=SAmWiv4pQ%2FJON%2Bsy0meOks4Uap71R86NT9VjfCAtBag%3D" -H "Ocp-Apim-Subscription-Key: 5cb74fcedeb14edd8eee96bc0634288b"
+
+
+ curl -v -X GET "https://cognativeaudio.cognitiveservices.azure.com/speechtotext/v3.1/transcriptions/3b44cf9e-a189-43e3-8155-8706409af59c" -H "Ocp-Apim-Subscription-Key: 5cb74fcedeb14edd8eee96bc0634288b"

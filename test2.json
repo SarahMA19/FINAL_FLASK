@@ -16,3 +16,7 @@
         }
     }
 }
+
+
+{'values': [
+        {'self': 'https: //cognativeaudio.cognitiveservices.azure.com/speechtotext/v3.1/transcriptions/68f0c5cc-b8d0-409d-b90c-8e2d90b21cf1/files/7387816f-122d-470a-95bf-10606129b457', 'name': 'contenturl_0.json', 'kind': 'Transcription', 'properties': {'size': 75366}, 'createdDateTime': '2023-04-27T05:00:48Z', 'links': {'contentUrl': 'https://spsvcprodusw3.blob.core.windows.net/customspeech-artifacts/TranscriptionData/68f0c5cc-b8d0-409d-b90c-8e2d90b21cf1_0_0.json?sv=2021-12-02&st=2023-04-27T04%3A55%3A49Z&se=2023-04-27T17%3A00%3A49Z&sr=b&sp=rl&sig=PoQa%2B5QrUZJFhO2L1zdsIXETy40AguHA25TTUOZbPn4%3D'}}, {'self': 'https://cognativeaudio.cognitiveservices.azure.com/speechtotext/v3.1/transcriptions/68f0c5cc-b8d0-409d-b90c-8e2d90b21cf1/files/da8038eb-6fe4-495a-9648-4274dde5946d', 'name': 'report.json', 'kind': 'TranscriptionReport', 'properties': {'size': 320}, 'createdDateTime': '2023-04-27T05:00:48Z', 'links': {'contentUrl': 'https://spsvcprodusw3.blob.core.windows.net/customspeech-artifacts/TranscriptionData/68f0c5cc-b8d0-409d-b90c-8e2d90b21cf1_report.json?sv=2021-12-02&st=2023-04-27T04%3A55%3A49Z&se=2023-04-27T17%3A00%3A49Z&sr=b&sp=rl&sig=Kbw7kPcMwv9bqVXMeE4u6gHsy6HO0e1I3RAfS33211I%3D'}}]}
