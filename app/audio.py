@@ -1,8 +1,9 @@
 import os
-from flask import Flask, request, redirect
+from flask import Flask, request, redirect, Blueprint
 from azure.storage.blob import BlobServiceClient    
 
-app = Flask(__name__)
+
+
 
 def CreateContainer(container_name):
     connect_str = os.getenv('AZURE_STORAGE_CONNECTION_STRING') # retrieve the connection string from the environment variable

@@ -1,15 +1,18 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime
-from werkzeug.security import generate_password_hash
+
+import uuid
 
 db = SQLAlchemy()
 
 
+
 class Transcription(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    account_id = db.Column(db.Guid, nullable=False)
+    account_id = db.Column(UUID(as_uuid=True), default=uuid.uuid4, nullable=False)
     transcription_id= db.Column(db.String, nullable=False)
-    results = db.Column(db.VARCHAR(10), nullable=False)
+    results = db.Column(db.VARCHAR, nullable=False)
     paid =  db.Column(db.Boolean)
 
     def __init__(self, id, account_id, transcription_id, results, paid):

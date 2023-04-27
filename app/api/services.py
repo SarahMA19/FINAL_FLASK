@@ -1,12 +1,16 @@
-import requests, json, os 
+import requests, json, os
+from flask import Blueprint  
 from azure.storage.blob import BlobClient, generate_blob_sas, BlobSasPermissions, BlobServiceClient
 from datetime import datetime, timedelta
+
+
+api = Blueprint('api', __name__, url_prefix='/api')
 
 myheader= {"Ocp-Apim-Subscription-Key": "5cb74fcedeb14edd8eee96bc0634288b", "Content-Type": "application/json"}
 def CreateContainer(container_name):
    
 
-    blob_service_client = BlobServiceClient.from_connection_string(conn_str=AZURE_STORAGE_CONNECTION_STRING) 
+    blob_service_client = BlobServiceClient.from_connection_string(conn_str=os.getenv('AZURE_STORAGE_CONNECTION_STRING'))
    
     try:
         container_client = blob_service_client.get_container_client(container=container_name)
@@ -75,8 +79,8 @@ def get_blob_sas(account_name,account_key, container_name, blob_name):
                                 expiry=datetime.utcnow() + timedelta(hours=24))
     return sas_blob
 
-blob = get_blob_sas(account_name,account_key, container_name, blob_name)
-requestTranscription('https://'+ account_name +'.blob.core.windows.net/' + container_name + '/' + blob_name + '?' + blob)
+blob = get_blob_sas(os.getenv('ACCOUNT_NAME'),os.getenv('ACCOUNT_KEY'), os.getenv('CONTAINER_NAME'), os.getenv('BLOB_NAME'))
+requestTranscription('https://'+ os.getenv('ACCOUNT_NAME') +'.blob.core.windows.net/' +os.getenv('CONTAINER_NAME')+ '/' + os.getenv('BLOB_NAME') + '?' + blob)
 
 
 def getStatus(transcriptionId):
@@ -117,8 +121,8 @@ def deleteTranscription(transcriptionId):
 
 def bigGirlPanties(container_name, filepath, filename):
     db_row = upload_audio(container_name, filepath, filename)
-    blob = get_blob_sas(account_name,account_key, container_name, blob_name)
-    transcriptionId = requestTranscription('https://'+ account_name +'.blob.core.windows.net/' + container_name + '/' + blob_name + '?' + blob)
+    blob = get_blob_sas(os.getenv('ACCOUNT_NAME'),os.getenv('ACCOUNT_KEY'), container_name, os.getenv('BLOB_NAME'))
+    transcriptionId = requestTranscription('https://'+ os.getenv('ACCOUNT_NAME') +'.blob.core.windows.net/' + container_name + '/' + os.getenv('BLOB_NAME') + '?' + blob)
     transcriptionStatus = getStatus(transcriptionId)
     if transcriptionStatus == False:
         print('ERROR')
@@ -133,25 +137,3 @@ bigGirlPanties("test2", "/Users/sarahmartin/Desktop", "ENG_M.wav")
 
 
 
-# person = {
-#     "name": "Sarah",
-#     'age' : 1234,
-#     'role': 'Mom'
-# }
-
-        #Python
-# for key, value in person.items():
-#print(key, ':', value)
-
-#for calue in person.values()
-    #print(value)
-
-        #Javascript
-# for (let key in person) {
-#     console.log(key, person[key])
-# }
-
-# const values = Object.values(person);
-# for (let value of values) {
-#     console.log(value)
-# }
