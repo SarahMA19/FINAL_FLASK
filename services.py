@@ -1,7 +1,7 @@
 import requests, json, os 
 from azure.storage.blob import BlobClient, generate_blob_sas, BlobSasPermissions, BlobServiceClient
 from datetime import datetime, timedelta
-AZURE_STORAGE_CONNECTION_STRING='DefaultEndpointsProtocol=https;AccountName=audiofilesproject;AccountKey=DgVvagiFy7KRV6/KtSRgzVWEHG6Dry2KHTWX01/OLDrD/x/JuzjH631eFMNPIzqUWtvOkFCJbWcU+AStrPqvRw==;EndpointSuffix=core.windows.net'
+
 myheader= {"Ocp-Apim-Subscription-Key": "5cb74fcedeb14edd8eee96bc0634288b", "Content-Type": "application/json"}
 def CreateContainer(container_name):
    
