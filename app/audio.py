@@ -1,9 +1,7 @@
 import os
-from flask import Flask, request, redirect, Blueprint
+from flask import Flask, request, redirect
 from azure.storage.blob import BlobServiceClient    
-
-
-
+from app import app
 
 def CreateContainer(container_name):
     connect_str = os.getenv('AZURE_STORAGE_CONNECTION_STRING') # retrieve the connection string from the environment variable
@@ -23,7 +21,8 @@ def Debug():
     print("Hello")
 
 @app.route("/")
-def view_photos():
+def audio():
+    
 
 #     blob_items = container_client.list_blobs() # list all the blobs in the container
 
@@ -51,10 +50,10 @@ def view_photos():
             <div class="card" style="margin: 1em 0; padding: 1em 0 0 0; align-items: center;">
                 <h3>Upload new File</h3>
                 <div class="form-group">
-                    <form method="post" action="/upload-photos" 
+                    <form method="post" action="/api" 
                         enctype="multipart/form-data">
                         <div style="display: flex;">
-                            <input type="file" accept=".mp3, .wav" name="photos" multiple class="form-control" style="margin-right: 1em;">
+                            <input type="file" accept=".mp3, .wav" name="audio" multiple class="form-control" style="margin-right: 1em;">
                             <input type="text" name="containername">
                             <input type="submit" class="btn btn-primary">
                         </div>
@@ -65,7 +64,7 @@ def view_photos():
     """  "</div></body>"
 
 #flask endpoint to upload a photo
-@app.route("/upload-photos", methods=["POST"])
+@app.route("/upload-audio", methods=["POST"])
 def upload_photos():
     filenames = ""
     # for file in request.files.getlist("containername"):
@@ -73,7 +72,7 @@ def upload_photos():
     name=request.form.get("containername")
     container_client = CreateContainer(name)
     
-    for file in request.files.getlist("photos"):
+    for file in request.files.getlist("audio"):
         try:
             container_client.upload_blob(file.filename, file) # upload the file to the container using the filename as the blob name
             filenames += file.filename + "<br /> "

@@ -21,7 +21,11 @@ class Transcription(db.Model):
         self.transcription_id = transcription_id
         self.results = results
         self.paid = paid
-        
+
+
+    def saveTransaction(self):
+        db.session.add(self)
+        db.session.commit()
 
 
 

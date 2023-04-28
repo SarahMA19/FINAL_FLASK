@@ -1,12 +1,15 @@
 import requests, json, os
-from flask import Blueprint  
+from flask import Blueprint, request
 from azure.storage.blob import BlobClient, generate_blob_sas, BlobSasPermissions, BlobServiceClient
 from datetime import datetime, timedelta
+from ..models import Transcription
 
 
-api = Blueprint('api', __name__, url_prefix='/api')
+
+api = Blueprint('api', __name__)
 
 myheader= {"Ocp-Apim-Subscription-Key": "5cb74fcedeb14edd8eee96bc0634288b", "Content-Type": "application/json"}
+
 def CreateContainer(container_name):
    
 
@@ -65,11 +68,6 @@ def requestTranscription(file):
         return data["self"]
      
 
-    
-
-
-       
-
 def get_blob_sas(account_name,account_key, container_name, blob_name):
     sas_blob = generate_blob_sas(account_name=account_name, 
                                 container_name=container_name,
@@ -92,8 +90,6 @@ def getStatus(transcriptionId):
             if data['status'] == 'Succeeded':
                 return True
            
-                
-
 
 def getResults(transcriptionId):
     res = requests.get(transcriptionId + "/files", headers=myheader)
@@ -106,6 +102,10 @@ def getResults(transcriptionId):
             return data['combinedRecognizedPhrases'][0]['lexical']
         
 
+def saveTrascription():
+    t = Transcription(request.form[''])
+        
+
 def deleteTranscription(transcriptionId):
     res = requests.delete(transcriptionId, headers=myheader)
     if res.status_code >= 400:
@@ -113,13 +113,11 @@ def deleteTranscription(transcriptionId):
     
 
        
-
-
-
-
-
-
-def bigGirlPanties(container_name, filepath, filename):
+@api.route('/api', methods=['GET','POST'])
+def bigGirlPanties():
+    container_name=request.json["container_name"]
+    filepath=request.json["filepath"]
+    filename=request.json["filename"]
     db_row = upload_audio(container_name, filepath, filename)
     blob = get_blob_sas(os.getenv('ACCOUNT_NAME'),os.getenv('ACCOUNT_KEY'), container_name, os.getenv('BLOB_NAME'))
     transcriptionId = requestTranscription('https://'+ os.getenv('ACCOUNT_NAME') +'.blob.core.windows.net/' + container_name + '/' + os.getenv('BLOB_NAME') + '?' + blob)
