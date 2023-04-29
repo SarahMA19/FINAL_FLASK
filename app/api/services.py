@@ -2,7 +2,7 @@ import requests, json, os
 from flask import Blueprint, request
 from azure.storage.blob import BlobClient, generate_blob_sas, BlobSasPermissions, BlobServiceClient
 from datetime import datetime, timedelta
-from ..models import Transcription
+
 
 
 
@@ -102,8 +102,7 @@ def getResults(transcriptionId):
             return data['combinedRecognizedPhrases'][0]['lexical']
         
 
-def saveTrascription():
-    t = Transcription(request.form[''])
+
         
 
 def deleteTranscription(transcriptionId):
@@ -116,11 +115,9 @@ def deleteTranscription(transcriptionId):
 @api.route('/api', methods=['GET','POST'])
 def bigGirlPanties():
     container_name=request.json["container_name"]
-    filepath=request.json["filepath"]
     filename=request.json["filename"]
-    db_row = upload_audio(container_name, filepath, filename)
-    blob = get_blob_sas(os.getenv('ACCOUNT_NAME'),os.getenv('ACCOUNT_KEY'), container_name, os.getenv('BLOB_NAME'))
-    transcriptionId = requestTranscription('https://'+ os.getenv('ACCOUNT_NAME') +'.blob.core.windows.net/' + container_name + '/' + os.getenv('BLOB_NAME') + '?' + blob)
+    blob = get_blob_sas(os.getenv('ACCOUNT_NAME'),os.getenv('ACCOUNT_KEY'), container_name, filename)
+    transcriptionId = requestTranscription('https://'+ os.getenv('ACCOUNT_NAME') +'.blob.core.windows.net/' + container_name + '/' + filename + '?' + blob)
     transcriptionStatus = getStatus(transcriptionId)
     if transcriptionStatus == False:
         print('ERROR')
@@ -129,9 +126,17 @@ def bigGirlPanties():
         realDeal = getResults(transcriptionId)
         print(realDeal)
     deleteTranscription(transcriptionId)
+    return realDeal
 
-bigGirlPanties("test2", "/Users/sarahmartin/Desktop", "ENG_M.wav")
-
+@api.route('/sasurl', methods=['GET', 'POST'])
+def sasUrl():
+    print('sasUrl')
+    # container_name=request.json["container_name"]
+    # filename=request.json["filename"]
+    # CreateContainer(container_name)
+    # blob = get_blob_sas(os.getenv('ACCOUNT_NAME'),os.getenv('ACCOUNT_KEY'), container_name, filename)
+    return 'hello'
+    
 
 
 

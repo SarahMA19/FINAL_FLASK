@@ -6,8 +6,12 @@ from .api.services import api
 
 from . models import db
 from flask_migrate import Migrate
+from flask_cors import CORS
 
 app= Flask(__name__)
+CORS(app)
+cors = CORS(app, resources={r"/sasurl": {"origins": "*"}})
+cors = CORS(app, resources={r"/api": {"origins": "*"}})
 
 app.config.from_object(Config)
 
