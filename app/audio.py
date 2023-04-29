@@ -79,6 +79,9 @@ def upload_photos():
         except Exception as e:
             print(e)
             print("Ignoring duplicate filenames") # ignore duplicate filenames
-    return redirect('/')    
+    return redirect('/') 
+
+
+
         
 

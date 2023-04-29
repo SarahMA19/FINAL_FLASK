@@ -6,7 +6,9 @@ from datetime import datetime, timedelta
 
 
 
+
 api = Blueprint('api', __name__)
+
 
 myheader= {"Ocp-Apim-Subscription-Key": "5cb74fcedeb14edd8eee96bc0634288b", "Content-Type": "application/json"}
 

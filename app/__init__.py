@@ -1,5 +1,4 @@
 from flask import Flask
-
 from config import Config
 from .api.services import api
 
@@ -9,9 +8,12 @@ from flask_migrate import Migrate
 from flask_cors import CORS
 
 app= Flask(__name__)
-CORS(app)
-cors = CORS(app, resources={r"/sasurl": {"origins": "*"}})
-cors = CORS(app, resources={r"/api": {"origins": "*"}})
+cors = CORS(app, resources={r'*': {'origins': 'http://localhost:3000'}})
+CORS(app, supports_credentials=True)
+
+
+
+
 
 app.config.from_object(Config)
 
