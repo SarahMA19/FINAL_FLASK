@@ -1,6 +1,6 @@
 import requests, json, os
 from flask import Blueprint, request
-from azure.storage.blob import BlobClient, generate_blob_sas, BlobSasPermissions, BlobServiceClient
+from azure.storage.blob import BlobClient, generate_account_sas, BlobSasPermissions, BlobServiceClient, ResourceTypes
 from datetime import datetime, timedelta
 
 
@@ -70,17 +70,16 @@ def requestTranscription(file):
         return data["self"]
      
 
-def get_blob_sas(account_name,account_key, container_name, blob_name):
-    sas_blob = generate_blob_sas(account_name=account_name, 
-                                container_name=container_name,
-                                blob_name=blob_name,
+def get_blob_sas(account_name,account_key):
+    sas_blob = generate_account_sas(account_name=account_name, 
                                 account_key=account_key,
-                                permission=BlobSasPermissions(read=True),
-                                expiry=datetime.utcnow() + timedelta(hours=24))
+                                resource_types=ResourceTypes(service=True, container=True, object=True),
+                                permission=BlobSasPermissions(read=True, add =True, write=True),
+                                expiry=datetime.utcnow() + timedelta(minutes=15))
     return sas_blob
 
-blob = get_blob_sas(os.getenv('ACCOUNT_NAME'),os.getenv('ACCOUNT_KEY'), os.getenv('CONTAINER_NAME'), os.getenv('BLOB_NAME'))
-requestTranscription('https://'+ os.getenv('ACCOUNT_NAME') +'.blob.core.windows.net/' +os.getenv('CONTAINER_NAME')+ '/' + os.getenv('BLOB_NAME') + '?' + blob)
+# blob = get_blob_sas(os.getenv('ACCOUNT_NAME'),os.getenv('ACCOUNT_KEY'), os.getenv('CONTAINER_NAME'), os.getenv('BLOB_NAME'))
+# requestTranscription('https://'+ os.getenv('ACCOUNT_NAME') +'.blob.core.windows.net/' +os.getenv('CONTAINER_NAME')+ '/' + os.getenv('BLOB_NAME') + '?' + blob)
 
 
 def getStatus(transcriptionId):
@@ -118,7 +117,7 @@ def deleteTranscription(transcriptionId):
 def bigGirlPanties():
     container_name=request.json["container_name"]
     filename=request.json["filename"]
-    blob = get_blob_sas(os.getenv('ACCOUNT_NAME'),os.getenv('ACCOUNT_KEY'), container_name, filename)
+    blob = get_blob_sas(os.getenv('ACCOUNT_NAME'),os.getenv('ACCOUNT_KEY'))
     transcriptionId = requestTranscription('https://'+ os.getenv('ACCOUNT_NAME') +'.blob.core.windows.net/' + container_name + '/' + filename + '?' + blob)
     transcriptionStatus = getStatus(transcriptionId)
     if transcriptionStatus == False:
@@ -133,11 +132,11 @@ def bigGirlPanties():
 @api.route('/sasurl', methods=['GET', 'POST'])
 def sasUrl():
     print('sasUrl')
-    # container_name=request.json["container_name"]
-    # filename=request.json["filename"]
-    # CreateContainer(container_name)
-    # blob = get_blob_sas(os.getenv('ACCOUNT_NAME'),os.getenv('ACCOUNT_KEY'), container_name, filename)
-    return 'hello'
+    container_name=request.json["container_name"]
+    filename=request.json["filename"]
+    CreateContainer(container_name)
+    blob = get_blob_sas(os.getenv('ACCOUNT_NAME'),os.getenv('ACCOUNT_KEY'))
+    return blob
     
 
 
