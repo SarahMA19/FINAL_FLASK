@@ -2,6 +2,7 @@ import requests, json, os
 from flask import Blueprint, request
 from azure.storage.blob import BlobClient, generate_account_sas, BlobSasPermissions, BlobServiceClient, ResourceTypes
 from datetime import datetime, timedelta
+from ..models import User
 
 
 
@@ -141,6 +142,18 @@ def sasUrl():
     CreateContainer(container_name)
     blob = get_blob_sas(os.getenv('ACCOUNT_NAME'),os.getenv('ACCOUNT_KEY'))
     return blob
+
+
+@api.route('/users')
+def create_user():
+    uid = request.json.get('uid')
+    name = request.json.get('displayName')
+    user = User.query.filter_by(uid=uid).first()
+    if user:
+        return {'status': 'ok', 'message': 'Unable to create user. User already exists', 'user': user.to_dict()}
+    user = User(uid=uid, name=name)
+    user.create()
+    return {'status': 'ok', 'user': user.to_dict()}
     
 
 

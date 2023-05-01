@@ -8,8 +8,8 @@ from flask_migrate import Migrate
 from flask_cors import CORS
 
 app= Flask(__name__)
-cors = CORS(app, resources={r'*': {'origins': 'http://localhost:3000'}})
-CORS(app, supports_credentials=True)
+
+CORS(app)
 
 
 
