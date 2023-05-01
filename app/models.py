@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime
+from werkzeug.security import generate_password_hash
 
 import uuid
 
@@ -45,13 +46,15 @@ class Transcription(db.Model):
 class User(db.Model):
     id = db.Column(db.Integer, unique=True, index=True, primary_key=True)
     uid = db.Column(db.String(150), nullable=False, unique=True, index=True)
-    name = db.Column(db.String(150), nullable=False)
+    name = uid = db.Column(db.String(150), nullable=False)
+    email = db.Column(db.String, nullable=False, unique=True)
+    password = db.Column(db.String(150), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    def __init__(self, uid, name):
+    def __init__(self, uid, name, password):
         self.uid = uid
-        self.name = name
-        
+        self.name=name
+        self.password = generate_password_hash(password)        
 
     def create(self):
         db.session.add(self)
@@ -67,7 +70,6 @@ class User(db.Model):
         return {
             'id': self.id,
             'uid': self.uid,
-            'name': self.name,
-            'created_at' : self.created_at
+            'name' :self.name,
         }
 

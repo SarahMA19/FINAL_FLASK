@@ -146,12 +146,13 @@ def sasUrl():
 
 @api.route('/users')
 def create_user():
-    uid = request.json.get('uid')
-    name = request.json.get('displayName')
+    uid = request.json['uid']
+    name = request.json['displayName']
+    email = request.json['email']
     user = User.query.filter_by(uid=uid).first()
     if user:
         return {'status': 'ok', 'message': 'Unable to create user. User already exists', 'user': user.to_dict()}
-    user = User(uid=uid, name=name)
+    user = User(uid=uid, name=name, email=email)
     user.create()
     return {'status': 'ok', 'user': user.to_dict()}
     
