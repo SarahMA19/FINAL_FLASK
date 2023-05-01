@@ -115,8 +115,11 @@ def deleteTranscription(transcriptionId):
        
 @api.route('/api', methods=['GET','POST'])
 def bigGirlPanties():
+    print(request.json)
     container_name=request.json["container_name"]
     filename=request.json["filename"]
+    print(container_name)
+    print(filename)
     blob = get_blob_sas(os.getenv('ACCOUNT_NAME'),os.getenv('ACCOUNT_KEY'))
     transcriptionId = requestTranscription('https://'+ os.getenv('ACCOUNT_NAME') +'.blob.core.windows.net/' + container_name + '/' + filename + '?' + blob)
     transcriptionStatus = getStatus(transcriptionId)
@@ -125,14 +128,14 @@ def bigGirlPanties():
         return print('ERROR, FAIL')
     else:
         realDeal = getResults(transcriptionId)
-        print(realDeal)
+        #print(realDeal)
     deleteTranscription(transcriptionId)
     return realDeal
 
 
 @api.route('/sasurl', methods=['GET', 'POST'])
 def sasUrl():
-    print('sasUrl')
+    #print('sasUrl')
     container_name=request.json["container_name"]
     filename=request.json["filename"]
     CreateContainer(container_name)
