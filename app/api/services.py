@@ -2,7 +2,7 @@ import requests, json, os
 from flask import Blueprint, request
 from azure.storage.blob import BlobClient, generate_account_sas, BlobSasPermissions, BlobServiceClient, ResourceTypes
 from datetime import datetime, timedelta
-from ..models import db, User
+from ..models import db, User, Transcription
 
 
 
@@ -161,7 +161,25 @@ def get_users():
     if not users:
         return {'status': 'not ok', 'message': 'Unable to get users'}
     return {'status': 'ok', 'users': [user.to_dict() for user in users]}
-    
 
+
+@api.post('/transcription')
+def create_transcription():
+    user_uid = request.json.get('user_uid')
+    results = request.json.get('results')
+    paid = request.json.get('paid')
+    filename = request.json.get('filename')
+    user = User.query.filter_by(uid=user_uid).first()
+    if not results or not user_uid or not user:
+        return {'status': 'not ok', 'message': 'Unable to create transcription'}
+    transcription = Transcription(user_uid=user_uid, results=results, paid=paid, filename=filename).create()
+    return {'status': 'ok', 'transcription': transcription.to_dict()}
+    
+@api.get('/transcription')
+def get_transcription():
+    transcriptions = Transcription.query.order_by(Transcription.created_at.desc()).all()
+    if not Transcription:
+        return {'status': 'not ok', 'message': 'Unable to get transcription'}
+    return {'status': 'ok', 'tweets': [transcription.to_dict() for transcription in transcriptions]}
 
 
