@@ -2,7 +2,7 @@ import requests, json, os
 from flask import Blueprint, request
 from azure.storage.blob import BlobClient, generate_account_sas, BlobSasPermissions, BlobServiceClient, ResourceTypes
 from datetime import datetime, timedelta
-from ..models import User
+from ..models import db, User
 
 
 
@@ -138,23 +138,29 @@ def bigGirlPanties():
 def sasUrl():
     #print('sasUrl')
     container_name=request.json["container_name"]
-    filename=request.json["filename"]
     CreateContainer(container_name)
     blob = get_blob_sas(os.getenv('ACCOUNT_NAME'),os.getenv('ACCOUNT_KEY'))
     return blob
 
 
-@api.route('/users')
+@api.post('/users')
 def create_user():
-    uid = request.json['uid']
-    name = request.json['displayName']
-    email = request.json['email']
+    uid = request.json.get("uid")
+    name = request.json.get("displayName")
+    email = request.json.get("email")
     user = User.query.filter_by(uid=uid).first()
     if user:
         return {'status': 'ok', 'message': 'Unable to create user. User already exists', 'user': user.to_dict()}
     user = User(uid=uid, name=name, email=email)
     user.create()
     return {'status': 'ok', 'user': user.to_dict()}
+
+@api.get('/users')
+def get_users():
+    users = User.query.all()
+    if not users:
+        return {'status': 'not ok', 'message': 'Unable to get users'}
+    return {'status': 'ok', 'users': [user.to_dict() for user in users]}
     
 
 
