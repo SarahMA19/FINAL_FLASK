@@ -116,11 +116,9 @@ def deleteTranscription(transcriptionId):
        
 @api.route('/api', methods=['GET','POST'])
 def bigGirlPanties():
-    print(request.json)
     container_name=request.json["container_name"]
     filename=request.json["filename"]
-    print(container_name)
-    print(filename)
+    uid=request.json["uid"]
     blob = get_blob_sas(os.getenv('ACCOUNT_NAME'),os.getenv('ACCOUNT_KEY'))
     transcriptionId = requestTranscription('https://'+ os.getenv('ACCOUNT_NAME') +'.blob.core.windows.net/' + container_name + '/' + filename + '?' + blob)
     transcriptionStatus = getStatus(transcriptionId)
@@ -129,7 +127,7 @@ def bigGirlPanties():
         return print('ERROR, FAIL')
     else:
         realDeal = getResults(transcriptionId)
-        #print(realDeal)
+    transcriptiondb = Transcription(user_uid=uid, body=realDeal, paid=False, filename=filename).create()   
     deleteTranscription(transcriptionId)
     return realDeal
 
@@ -163,23 +161,14 @@ def get_users():
     return {'status': 'ok', 'users': [user.to_dict() for user in users]}
 
 
-@api.post('/transcription')
-def create_transcription():
-    user_uid = request.json.get('user_uid')
-    results = request.json.get('results')
-    paid = request.json.get('paid')
-    filename = request.json.get('filename')
-    user = User.query.filter_by(uid=user_uid).first()
-    if not results or not user_uid or not user:
-        return {'status': 'not ok', 'message': 'Unable to create transcription'}
-    transcription = Transcription(user_uid=user_uid, results=results, paid=paid, filename=filename).create()
-    return {'status': 'ok', 'transcription': transcription.to_dict()}
+
+
     
 @api.get('/transcription')
 def get_transcription():
-    transcriptions = Transcription.query.order_by(Transcription.created_at.desc()).all()
+    transcriptions = Transcription.query.order_by(Transcription.user_uid.desc()).all()
     if not Transcription:
         return {'status': 'not ok', 'message': 'Unable to get transcription'}
-    return {'status': 'ok', 'tweets': [transcription.to_dict() for transcription in transcriptions]}
+    return {'status': 'ok', 'transcription': [transcription.to_dict() for transcription in transcriptions]}
 
 

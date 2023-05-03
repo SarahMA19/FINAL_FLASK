@@ -40,13 +40,14 @@ class User(db.Model):
 
 class Transcription(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    results = db.Column(db.VARCHAR, nullable=False)
+    body = db.Column(db.VARCHAR, nullable=False)
     paid =  db.Column(db.Boolean)
     filename = db.Column(db.VARCHAR, nullable=False)
     user_uid = db.Column(db.String, db.ForeignKey('user.uid'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    def __init__(self, results, paid, filename, user_uid):
-        self.results = results
+    def __init__(self, body, paid, filename, user_uid):
+        self.body = body
         self.paid = paid
         self.user_uid = user_uid
         self.filename = filename
@@ -64,7 +65,7 @@ class Transcription(db.Model):
     def to_dict(self):
         return {
             'id': self.id,
-            'results' : self.results,
+            'body' : self.body,
             'paid' : self.paid,
             'filename': self.filename,
             'user': self.user.to_dict()
