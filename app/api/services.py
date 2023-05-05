@@ -1,5 +1,6 @@
 import requests, json, os
 from flask import Blueprint, request
+
 from azure.storage.blob import BlobClient, generate_account_sas, BlobSasPermissions, BlobServiceClient, ResourceTypes
 from datetime import datetime, timedelta
 from ..models import db, User, Transcription
@@ -8,7 +9,7 @@ from ..models import db, User, Transcription
 
 
 
-api = Blueprint('api', __name__)
+api = Blueprint('api', __name__, url_prefix='/api')
 
 
 myheader= {"Ocp-Apim-Subscription-Key": "5cb74fcedeb14edd8eee96bc0634288b", "Content-Type": "application/json"}
@@ -114,7 +115,7 @@ def deleteTranscription(transcriptionId):
     
 
        
-@api.route('/api', methods=['GET','POST'])
+@api.post('/transcription')
 def bigGirlPanties():
     container_name=request.json["container_name"]
     filename=request.json["filename"]
@@ -132,7 +133,7 @@ def bigGirlPanties():
     return realDeal
 
 
-@api.route('/sasurl', methods=['GET', 'POST'])
+@api.get('/sasurl')
 def sasUrl():
     #print('sasUrl')
     container_name=request.json["container_name"]
@@ -164,11 +165,16 @@ def get_users():
 
 
     
-@api.get('/transcription')
+@api.get('/transcriptions')
 def get_transcription():
-    transcriptions = Transcription.query.order_by(Transcription.user_uid.desc()).all()
-    if not Transcription:
-        return {'status': 'not ok', 'message': 'Unable to get transcription'}
-    return {'status': 'ok', 'transcription': [transcription.to_dict() for transcription in transcriptions]}
+    user_uid = request.args.get('uid')
+    if user_uid == 'undefined':
+        return "undefined"
+    else:
+        transcriptions = Transcription.query.filter(Transcription.user_uid==user_uid).all()
+
+        if not transcriptions:
+            return {'status': 'not ok', 'message': 'Unable to get transcription'}
+        return {'status': 'ok', 'transcription': [transcription.to_dict() for transcription in transcriptions]}
 
 

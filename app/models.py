@@ -1,5 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime
+import uuid
 
 
 
@@ -13,6 +15,7 @@ class User(db.Model):
     name = db.Column(db.String(150), nullable=False)
     email = db.Column(db.String, nullable=False, unique=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    container_name = db.Column(UUID(as_uuid=True), default=uuid.uuid4)
 
     def __init__(self, uid, name, email):
         self.uid = uid
@@ -68,5 +71,5 @@ class Transcription(db.Model):
             'body' : self.body,
             'paid' : self.paid,
             'filename': self.filename,
-            'user': self.user.to_dict()
+            'user': self.user_uid
         }
