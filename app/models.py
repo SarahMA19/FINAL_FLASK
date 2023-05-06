@@ -70,8 +70,9 @@ class Transcription(db.Model):
     def to_dict(self):
         return {
             'id': self.id,
-            'body' : self.body,
+            'body' : self.body[0:30],
             'paid' : self.paid,
             'filename': self.filename,
             'user': self.user_uid,
-        }
+            'created_at': self.created_at,
+        }   

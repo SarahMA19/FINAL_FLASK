@@ -133,7 +133,7 @@ def bigGirlPanties():
     return realDeal
 
 
-@api.get('/sasurl')
+@api.post('/sasurl')
 def sasUrl():
     #print('sasUrl')
     container_name=request.json["container_name"]
