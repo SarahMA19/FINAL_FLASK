@@ -177,5 +177,16 @@ def get_transcription():
         if not transcriptions:
             return {'status': 'not ok', 'message': 'Unable to get transcription'}
         return {'status': 'ok', 'transcription': [transcription.to_dict() for transcription in transcriptions]}
+    
+
+@api.delete('/transcriptions/<int:id>')
+def delete_transcription(id):
+    transcription = Transcription.query.get(id)
+    if not transcription:
+        return {'status': 'not ok', 'message': 'Unable to delete transcription'}
+    transcription.delete()
+    print('delete')
+    return {'status': 'ok'}
+
 
 
