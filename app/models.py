@@ -17,10 +17,11 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     container_name = db.Column(UUID(as_uuid=True), default=uuid.uuid4)
 
-    def __init__(self, uid, name, email):
+    def __init__(self, uid, name, email, container_name):
         self.uid = uid
         self.name=name  
         self.email=email    
+        self.container_name=container_name
 
     def create(self):
         db.session.add(self)
@@ -37,7 +38,8 @@ class User(db.Model):
             'id': self.id,
             'uid': self.uid,
             'name':self.name,
-            'email': self.email
+            'email': self.email,
+            "container_name": self.container_name,
         }
 
 
@@ -71,5 +73,5 @@ class Transcription(db.Model):
             'body' : self.body,
             'paid' : self.paid,
             'filename': self.filename,
-            'user': self.user_uid
+            'user': self.user_uid,
         }

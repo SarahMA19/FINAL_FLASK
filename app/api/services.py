@@ -147,10 +147,11 @@ def create_user():
     uid = request.json.get("uid")
     name = request.json.get("displayName")
     email = request.json.get("email")
+    container_name = request.json.get("container_name")
     user = User.query.filter_by(uid=uid).first()
     if user:
         return {'status': 'ok', 'message': 'Unable to create user. User already exists', 'user': user.to_dict()}
-    user = User(uid=uid, name=name, email=email)
+    user = User(uid=uid, name=name, email=email, container_name=container_name)
     user.create()
     return {'status': 'ok', 'user': user.to_dict()}
 
