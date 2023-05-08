@@ -1,6 +1,9 @@
 from flask import Flask
 from config import Config
+
 from .api.services import api
+from .payments.routes import payments
+
 
 
 from . models import db
@@ -21,5 +24,6 @@ db.init_app(app)
 migrate = Migrate(app, db)
 
 app.register_blueprint(api)
+app.register_blueprint(payments)
 
 from . import audio
