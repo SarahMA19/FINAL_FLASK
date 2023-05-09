@@ -50,12 +50,14 @@ class Transcription(db.Model):
     filename = db.Column(db.VARCHAR, nullable=False)
     user_uid = db.Column(db.String, db.ForeignKey('user.uid'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    audio_length = db.Column(db.Float, nullable=False)
 
-    def __init__(self, body, paid, filename, user_uid):
+    def __init__(self, body, paid, filename, user_uid, audio_length):
         self.body = body
         self.paid = paid
         self.user_uid = user_uid
         self.filename = filename
+        self.audio_length = audio_length
 
     def create(self):
         db.session.add(self)
@@ -70,9 +72,10 @@ class Transcription(db.Model):
     def to_dict(self):
         return {
             'id': self.id,
-            'body' : self.body[0:30],
+            'body' : self.body,
             'paid' : self.paid,
             'filename': self.filename,
             'user': self.user_uid,
             'created_at': self.created_at,
+            'audio_length': self.audio_length,
         }   

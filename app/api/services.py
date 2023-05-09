@@ -120,6 +120,7 @@ def bigGirlPanties():
     container_name=request.json["container_name"]
     filename=request.json["filename"]
     uid=request.json["uid"]
+    duration=request.json["duration"]
     blob = get_blob_sas(os.getenv('ACCOUNT_NAME'),os.getenv('ACCOUNT_KEY'))
     transcriptionId = requestTranscription('https://'+ os.getenv('ACCOUNT_NAME') +'.blob.core.windows.net/' + container_name + '/' + filename + '?' + blob)
     transcriptionStatus = getStatus(transcriptionId)
@@ -128,7 +129,7 @@ def bigGirlPanties():
         return print('ERROR, FAIL')
     else:
         realDeal = getResults(transcriptionId)
-    transcriptiondb = Transcription(user_uid=uid, body=realDeal, paid=False, filename=filename).create()   
+    transcriptiondb = Transcription(user_uid=uid, body=realDeal, paid=False, filename=filename, audio_length=duration).create()   
     deleteTranscription(transcriptionId)
     return realDeal
 
@@ -173,9 +174,10 @@ def get_transcription():
         return "undefined"
     else:
         transcriptions = Transcription.query.filter(Transcription.user_uid==user_uid).all()
-
         if not transcriptions:
             return {'status': 'not ok', 'message': 'Unable to get transcription'}
+        for t in transcriptions:
+            t.body = t.body[0:30]
         return {'status': 'ok', 'transcription': [transcription.to_dict() for transcription in transcriptions]}
     
 
@@ -187,6 +189,13 @@ def delete_transcription(id):
     transcription.delete()
     print('delete')
     return {'status': 'ok'}
+
+@api.get('/transcriptions/<int:id>')
+def get_transcription_id(id):
+    transcription = Transcription.query.get(id)
+    if not transcription:
+        return {'status': 'not ok', 'message': 'Unable to get transcription'}
+    return transcription.body
 
 
 
