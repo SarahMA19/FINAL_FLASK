@@ -1,4 +1,5 @@
-from flask import Flask
+from flask import Flask, render_template
+
 from config import Config
 
 from .api.services import api
@@ -13,6 +14,11 @@ app= Flask(__name__)
 CORS(app)
 
 app.config.from_object(Config)
+
+@app.route('/')
+def index():
+    return render_template('base.html')
+
 
 db.init_app(app)
 migrate = Migrate(app, db)
