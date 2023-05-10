@@ -1,12 +1,8 @@
 import requests, json, os
 from flask import Blueprint, request
-
 from azure.storage.blob import BlobClient, generate_account_sas, BlobSasPermissions, BlobServiceClient, ResourceTypes
 from datetime import datetime, timedelta
 from ..models import db, User, Transcription
-
-
-
 
 
 api = Blueprint('api', __name__, url_prefix='/api')
@@ -14,37 +10,20 @@ api = Blueprint('api', __name__, url_prefix='/api')
 
 myheader= {"Ocp-Apim-Subscription-Key": "5cb74fcedeb14edd8eee96bc0634288b", "Content-Type": "application/json"}
 
-def CreateContainer(container_name):
-   
 
+##### HELPER FUNCTIONS #####
+
+def CreateContainer(container_name):
     blob_service_client = BlobServiceClient.from_connection_string(conn_str=os.getenv('AZURE_STORAGE_CONNECTION_STRING'))
-   
     try:
         container_client = blob_service_client.get_container_client(container=container_name)
         container_client.get_container_properties()
     except Exception as e:
-        # print(e)
-        # print("Creating container...")
         container_client = blob_service_client.create_container(container_name)
     return container_client
 
-
-def upload_audio(container_name, filepath, filename):
-    container_client = CreateContainer(container_name)
-    with open(file=os.path.join(filepath, filename), mode="rb") as data:
-        try:
-             container_client.upload_blob(filepath, filename)
-        except Exception as e:
-            f = 10
-            # print(e)
-            # print("Ignoring duplicate filenames") # ignore duplicate filenames
-   
-    #todo: save name in db & update status - transcription table
-    #return transcription record ID
-    return 10
             
     
-
 def requestTranscription(file):
     myobject ={
     'contentUrls':[file],
@@ -80,8 +59,6 @@ def get_blob_sas(account_name,account_key):
                                 expiry=datetime.utcnow() + timedelta(minutes=15))
     return sas_blob
 
-# blob = get_blob_sas(os.getenv('ACCOUNT_NAME'),os.getenv('ACCOUNT_KEY'), os.getenv('CONTAINER_NAME'), os.getenv('BLOB_NAME'))
-# requestTranscription('https://'+ os.getenv('ACCOUNT_NAME') +'.blob.core.windows.net/' +os.getenv('CONTAINER_NAME')+ '/' + os.getenv('BLOB_NAME') + '?' + blob)
 
 
 def getStatus(transcriptionId):
@@ -89,7 +66,6 @@ def getStatus(transcriptionId):
         res = requests.get(transcriptionId, headers=myheader)
         if res.ok:
             data = res.json()
-            # print(data['status'])
             if data['status'] == 'Succeeded':
                 return True
            
@@ -98,25 +74,21 @@ def getResults(transcriptionId):
     res = requests.get(transcriptionId + "/files", headers=myheader)
     if res.ok:
         data = res.json()
-        # print(data)
         words = requests.get(data['values'][0]['links']['contentUrl'], headers=myheader)
         if words.ok:
             data=words.json()
             return data['combinedRecognizedPhrases'][0]['lexical']
-        
-
-
-        
+                
 
 def deleteTranscription(transcriptionId):
     res = requests.delete(transcriptionId, headers=myheader)
     if res.status_code >= 400:
         print('FAILED')
     
-
+##### ROUTES ######
        
 @api.post('/transcription')
-def bigGirlPanties():
+def createTranscriptionWorkFlow():
     container_name=request.json["container_name"]
     filename=request.json["filename"]
     uid=request.json["uid"]
@@ -136,7 +108,6 @@ def bigGirlPanties():
 
 @api.post('/sasurl')
 def sasUrl():
-    #print('sasUrl')
     container_name=request.json["container_name"]
     CreateContainer(container_name)
     blob = get_blob_sas(os.getenv('ACCOUNT_NAME'),os.getenv('ACCOUNT_KEY'))
@@ -164,16 +135,13 @@ def get_users():
     return {'status': 'ok', 'users': [user.to_dict() for user in users]}
 
 
-
-
-    
 @api.get('/transcriptions')
 def get_transcription():
     user_uid = request.args.get('uid')
     if user_uid == 'undefined':
         return "undefined"
     else:
-        transcriptions = Transcription.query.filter(Transcription.user_uid==user_uid).all()
+        transcriptions = Transcription.query.filter(Transcription.user_uid==user_uid).order_by(Transcription.created_at.desc()).all()
         if not transcriptions:
             return {'status': 'not ok', 'message': 'Unable to get transcription'}
         for t in transcriptions:
@@ -187,7 +155,6 @@ def delete_transcription(id):
     if not transcription:
         return {'status': 'not ok', 'message': 'Unable to delete transcription'}
     transcription.delete()
-    print('delete')
     return {'status': 'ok'}
 
 @api.get('/transcriptions/<int:id>')
@@ -196,6 +163,14 @@ def get_transcription_id(id):
     if not transcription:
         return {'status': 'not ok', 'message': 'Unable to get transcription'}
     return transcription.body
+
+
+
+
+
+
+
+
 
 
 
